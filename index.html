@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>期限ギリギリスト</title>
+    <meta name="viewport" content="width=device-width">
+    <script defer src="./util.js"></script>
+    <script defer src="./taskList.js"></script>
+    <script defer src="./main.js"></script>
+</head>
+<body>
+    <header>
+        <h1>期限ギリギリスト</h1>
+    </header>
+    
+    <main>
+        <h2>課題リスト</h2>
+        <fieldset>
+            <legend>新規タスク追加</legend>
+            <form>
+                <label>
+                    名前　　: 
+                    <input id="addTaskNameButton" type="text">
+                </label><br>
+                <label>
+                    期限月日: 
+                    <input id="addTaskDeadlineDateButton" type="date">
+                </label><br>
+                <label>
+                    期限時刻: 
+                    <input id="addTaskDeadlineTimeButton" type="time" value="23:59">
+                </label><br>
+            </form>
+            <button id="addTaskButton" type="button">タスク追加</button>
+            <button id="everyTaskDialogShowButton" type="button">定期タスク編集</button>
+        </fieldset>
+        <label>
+            進捗状況:
+            <progress id="progressBar"></progress>
+        </label><br>
+        <button id="reloadButton" type="button">リロード</button>
+        <table border>
+            <thead>
+                <tr>
+                    <th>名前</th>
+                    <th>期限</th>
+                    <th>状態</th>
+                    <th>完了</th>
+                    <th>削除</th>
+                </tr>
+            </thead>
+            <tbody id="taskTable"></tbody>
+        </table>
+        
+        <dialog id="everyTaskDialog">
+            <h1>定期課題リスト</h1>
+            <fieldset>
+                <legend>新規定期タスク追加</legend>
+                <form>
+                    <label>
+                        名前　　: 
+                        <input id="addEveryTaskNameButton" type="text">
+                    </label><br>
+                    <label>
+                        追加曜日: 
+                        <select id="addEveryTaskAddDayButton">
+                            <option value="1" selected>月曜日</option>
+                            <option value="2">火曜日</option>
+                            <option value="3">水曜日</option>
+                            <option value="4">木曜日</option>
+                            <option value="5">金曜日</option>
+                            <option value="6">土曜日</option>
+                            <option value="0">日曜日</option>
+                        </select>
+                    </label><br>
+                    <!--<label>
+                        追加時刻: 
+                        <input type="time" value="00:00">
+                    </label><br>-->
+                    <label>
+                        期限日数: 
+                        <input id="addEveryTaskGraceButton" type="number" value="7" min="0" step="1">
+                    </label><br>
+                    <label>
+                        期限時刻: 
+                        <input id="addEveryTaskDeadlineTimeButton" type="time" value="23:59">
+                    </label>
+                </form>
+                <button id="addEveryTaskButton" type="button">定期タスク追加</button>
+            </fieldset>
+            <table border>
+                <thead>
+                    <tr>
+                        <th>名前</th>
+                        <th>追加</th>
+                        <th>期限</th>
+                        <th>削除</th>
+                    </tr>
+                </thead>
+                <tbody id="everyTaskTable"></tbody>
+            </table>
+            <button id="everyTaskDialogCloseButton" type="button">閉じる</button>
+        </dialog>
+    </main>
+    
+    <footer>
+        <p><small>(C)2021 淵野アタリ</small></p>
+    </footer>
+</body>
+</html>
