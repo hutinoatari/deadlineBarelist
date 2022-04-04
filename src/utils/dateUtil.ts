@@ -2,8 +2,7 @@ const numberTo2Digits = (n: number): string => (n + "").padStart(2, "0");
 
 const dayString = ["日", "月", "火", "水", "木", "金", "土"];
 
-const ISOStringToYYYYMMDDdHHMM = (ISOString: string): string => {
-    const date = new Date(ISOString);
+const dateToYYYYMMDDdHHMM = (date: Date): string => {
     const y = date.getFullYear();
     const mo = date.getMonth() + 1;
     const d = date.getDate();
@@ -16,4 +15,4 @@ const ISOStringToYYYYMMDDdHHMM = (ISOString: string): string => {
     return YYYYMMDDdHHMM;
 };
 
-export { numberTo2Digits, dayString, ISOStringToYYYYMMDDdHHMM };
+export { numberTo2Digits, dayString, dateToYYYYMMDDdHHMM };

@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import { TaskData } from "../types/data";
 import { generateRandomString } from "../utils/util";
-import { numberTo2Digits, ISOStringToYYYYMMDDdHHMM } from "../utils/dateUtil";
+import { numberTo2Digits, dateToYYYYMMDDdHHMM } from "../utils/dateUtil";
 
 const TopPage: FC<{}> = () => {
     const [taskDatas, setTaskDatas] = useState<TaskData[]>([]);
@@ -20,11 +20,21 @@ const TopPage: FC<{}> = () => {
         (async () => {
             const json = await localStorage.getItem("tasks");
             if (json === null) return;
-            setTaskDatas(JSON.parse(json));
+            setTaskDatas(
+                JSON.parse(json).map((e: any) => ({
+                    ...e,
+                    deadline: new Date(e.deadline),
+                }))
+            );
         })();
     }, []);
     useEffect(() => {
-        const json = JSON.stringify(taskDatas);
+        const json = JSON.stringify(
+            taskDatas.map((e: TaskData) => ({
+                ...e,
+                deadline: e.deadline.toISOString(),
+            }))
+        );
         localStorage.setItem("tasks", json);
     }, [taskDatas]);
     useEffect(() => {
@@ -34,8 +44,7 @@ const TopPage: FC<{}> = () => {
 
     const addTask = (newTask: TaskData) => {
         const newTaskDatas = [...taskDatas, newTask].sort(
-            (a, b) =>
-                new Date(a.deadline).getTime() - new Date(b.deadline).getTime()
+            (a, b) => a.deadline.getTime() - b.deadline.getTime()
         );
         setTaskDatas(newTaskDatas);
     };
@@ -119,7 +128,7 @@ const TopPage: FC<{}> = () => {
                                     const newTaskData: TaskData = {
                                         id: generateRandomString(),
                                         name: trimedTaskName,
-                                        deadline: taskDeadline.toISOString(),
+                                        deadline: taskDeadline,
                                         isDone: false,
                                     };
                                     addTask(newTaskData);
@@ -139,9 +148,10 @@ const TopPage: FC<{}> = () => {
                         </div>
                     </fieldset>
                 </form>
-                <p>
-                    最終更新: {ISOStringToYYYYMMDDdHHMM(nowDate.toISOString())}
-                </p>
+                <p>最終更新: {dateToYYYYMMDDdHHMM(nowDate)}</p>
+                <div>
+                    <button onClick={() => setNowDate(new Date())}>更新</button>
+                </div>
                 <table>
                     <thead>
                         <tr>
@@ -156,9 +166,7 @@ const TopPage: FC<{}> = () => {
                             <tr key={taskData.id}>
                                 <td>{taskData.name}</td>
                                 <td>
-                                    {ISOStringToYYYYMMDDdHHMM(
-                                        taskData.deadline
-                                    )}
+                                    {dateToYYYYMMDDdHHMM(taskData.deadline)}
                                 </td>
                                 <td>{taskData.isDone ? "完了" : "未"}</td>
                                 <td>
@@ -170,6 +178,12 @@ const TopPage: FC<{}> = () => {
                                     </button>
                                     <button
                                         onClick={() => {
+                                            if (
+                                                !window.confirm(
+                                                    "ツイートしますか？"
+                                                )
+                                            )
+                                                return;
                                             const tweetText = `${taskData.name} submission complete...`;
                                             const url = `https://twitter.com/intent/tweet?text=${encodeURI(
                                                 tweetText

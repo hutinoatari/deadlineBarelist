@@ -1,6 +1,6 @@
 export interface TaskData {
     id: string;
     name: string;
-    deadline: string;
+    deadline: Date;
     isDone: boolean;
 }
