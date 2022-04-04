@@ -17,6 +17,17 @@ const TopPage: FC<{}> = () => {
         new Date(`${taskDeadlineDate} ${taskDeadlineTime}`)
     );
     useEffect(() => {
+        (async () => {
+            const json = await localStorage.getItem("tasks");
+            if (json === null) return;
+            setTaskDatas(JSON.parse(json));
+        })();
+    }, []);
+    useEffect(() => {
+        const json = JSON.stringify(taskDatas);
+        localStorage.setItem("tasks", json);
+    }, [taskDatas]);
+    useEffect(() => {
         const date = new Date(`${taskDeadlineDate} ${taskDeadlineTime}`);
         setTaskDeadline(date);
     }, [taskDeadlineDate, taskDeadlineTime]);
