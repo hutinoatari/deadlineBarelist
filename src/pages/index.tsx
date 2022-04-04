@@ -32,6 +32,27 @@ const TopPage: FC<{}> = () => {
         setTaskDeadline(date);
     }, [taskDeadlineDate, taskDeadlineTime]);
 
+    const addTask = (newTask: TaskData) => {
+        const newTaskDatas = [...taskDatas, newTask].sort(
+            (a, b) =>
+                new Date(a.deadline).getTime() - new Date(b.deadline).getTime()
+        );
+        setTaskDatas(newTaskDatas);
+    };
+    const deleteTask = (id: string) => {
+        if (!window.confirm("強制的に課題を削除します。よろしいですか？"))
+            return;
+        const newTaskDatas = taskDatas.filter((e) => e.id !== id);
+        setTaskDatas(newTaskDatas);
+    };
+    const doneTask = (id: string) => {
+        if (!window.confirm("課題を完了しますか？")) return;
+        const newTaskDatas = taskDatas.map((e) =>
+            e.id === id ? { ...e, isDone: true } : e
+        );
+        setTaskDatas(newTaskDatas);
+    };
+
     return (
         <>
             <header>
@@ -101,7 +122,7 @@ const TopPage: FC<{}> = () => {
                                         deadline: taskDeadline.toISOString(),
                                         isDone: false,
                                     };
-                                    setTaskDatas([...taskDatas, newTaskData]);
+                                    addTask(newTaskData);
                                     setTaskName("");
                                     setTaskDeadlineDate(
                                         `${nowDate.getFullYear()}-${numberTo2Digits(
@@ -127,6 +148,7 @@ const TopPage: FC<{}> = () => {
                             <th>名前</th>
                             <th>期限</th>
                             <th>状況</th>
+                            <th>操作</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -139,6 +161,31 @@ const TopPage: FC<{}> = () => {
                                     )}
                                 </td>
                                 <td>{taskData.isDone ? "完了" : "未"}</td>
+                                <td>
+                                    <button
+                                        onClick={() => doneTask(taskData.id)}
+                                        disabled={taskData.isDone}
+                                    >
+                                        提出
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            const tweetText = `${taskData.name} submission complete...`;
+                                            const url = `https://twitter.com/intent/tweet?text=${encodeURI(
+                                                tweetText
+                                            )}`;
+                                            window.open(url, "_blank");
+                                        }}
+                                        disabled={!taskData.isDone}
+                                    >
+                                        共有
+                                    </button>
+                                    <button
+                                        onClick={() => deleteTask(taskData.id)}
+                                    >
+                                        削除
+                                    </button>
+                                </td>
                             </tr>
                         ))}
                     </tbody>
